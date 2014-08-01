@@ -21,6 +21,8 @@
 		8056B992198C5A52001A033B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8056B974198C5A52001A033B /* UIKit.framework */; };
 		8056B99A198C5A52001A033B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8056B998198C5A52001A033B /* InfoPlist.strings */; };
 		8056B99C198C5A52001A033B /* ACELoadingControlDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B99B198C5A52001A033B /* ACELoadingControlDemoTests.m */; };
+		8056B9A8198C5BA3001A033B /* ACELoadingStateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B9A7198C5BA3001A033B /* ACELoadingStateManager.m */; };
+		8056B9AB198C5C14001A033B /* ACEStateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B9AA198C5C14001A033B /* ACEStateManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +55,10 @@
 		8056B997198C5A52001A033B /* ACELoadingControlDemoTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ACELoadingControlDemoTests-Info.plist"; sourceTree = "<group>"; };
 		8056B999198C5A52001A033B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8056B99B198C5A52001A033B /* ACELoadingControlDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ACELoadingControlDemoTests.m; sourceTree = "<group>"; };
+		8056B9A6198C5BA3001A033B /* ACELoadingStateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACELoadingStateManager.h; sourceTree = "<group>"; };
+		8056B9A7198C5BA3001A033B /* ACELoadingStateManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACELoadingStateManager.m; sourceTree = "<group>"; };
+		8056B9A9198C5C14001A033B /* ACEStateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACEStateManager.h; sourceTree = "<group>"; };
+		8056B9AA198C5C14001A033B /* ACEStateManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACEStateManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +88,7 @@
 		8056B964198C5A52001A033B = {
 			isa = PBXGroup;
 			children = (
+				8056B9A5198C5B84001A033B /* ACELoadingControl */,
 				8056B976198C5A52001A033B /* ACELoadingControlDemo */,
 				8056B995198C5A52001A033B /* ACELoadingControlDemoTests */,
 				8056B96F198C5A52001A033B /* Frameworks */,
@@ -114,10 +121,8 @@
 			children = (
 				8056B97F198C5A52001A033B /* ACEAppDelegate.h */,
 				8056B980198C5A52001A033B /* ACEAppDelegate.m */,
-				8056B982198C5A52001A033B /* Main.storyboard */,
 				8056B985198C5A52001A033B /* ACEViewController.h */,
 				8056B986198C5A52001A033B /* ACEViewController.m */,
-				8056B988198C5A52001A033B /* Images.xcassets */,
 				8056B977198C5A52001A033B /* Supporting Files */,
 			);
 			path = ACELoadingControlDemo;
@@ -127,9 +132,11 @@
 			isa = PBXGroup;
 			children = (
 				8056B978198C5A52001A033B /* ACELoadingControlDemo-Info.plist */,
+				8056B97E198C5A52001A033B /* ACELoadingControlDemo-Prefix.pch */,
+				8056B988198C5A52001A033B /* Images.xcassets */,
 				8056B979198C5A52001A033B /* InfoPlist.strings */,
 				8056B97C198C5A52001A033B /* main.m */,
-				8056B97E198C5A52001A033B /* ACELoadingControlDemo-Prefix.pch */,
+				8056B982198C5A52001A033B /* Main.storyboard */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -150,6 +157,25 @@
 				8056B998198C5A52001A033B /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8056B9A5198C5B84001A033B /* ACELoadingControl */ = {
+			isa = PBXGroup;
+			children = (
+				8056B9AC198C5C1B001A033B /* Base */,
+				8056B9A6198C5BA3001A033B /* ACELoadingStateManager.h */,
+				8056B9A7198C5BA3001A033B /* ACELoadingStateManager.m */,
+			);
+			path = ACELoadingControl;
+			sourceTree = "<group>";
+		};
+		8056B9AC198C5C1B001A033B /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				8056B9A9198C5C14001A033B /* ACEStateManager.h */,
+				8056B9AA198C5C14001A033B /* ACEStateManager.m */,
+			);
+			name = Base;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -252,6 +278,8 @@
 			files = (
 				8056B987198C5A52001A033B /* ACEViewController.m in Sources */,
 				8056B981198C5A52001A033B /* ACEAppDelegate.m in Sources */,
+				8056B9A8198C5BA3001A033B /* ACELoadingStateManager.m in Sources */,
+				8056B9AB198C5C14001A033B /* ACEStateManager.m in Sources */,
 				8056B97D198C5A52001A033B /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -457,6 +485,7 @@
 				8056B9A1198C5A52001A033B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8056B9A2198C5A52001A033B /* Build configuration list for PBXNativeTarget "ACELoadingControlDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -465,6 +494,7 @@
 				8056B9A4198C5A52001A033B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
