@@ -17,4 +17,21 @@ NSString * const ACELoadingStateError = @"ErrorState";
 
 @implementation ACELoadingStateManager
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.currentState = ACELoadingStateInitial;
+        self.validTransitions = @{
+                                  ACELoadingStateInitial            : @[ACELoadingStateLoadingContent],
+                                  ACELoadingStateLoadingContent     : @[ACELoadingStateContentLoaded, ACELoadingStateNoContent, ACELoadingStateError],
+                                  ACELoadingStateRefreshingContent  : @[ACELoadingStateContentLoaded, ACELoadingStateNoContent, ACELoadingStateError],
+                                  ACELoadingStateContentLoaded      : @[ACELoadingStateRefreshingContent, ACELoadingStateNoContent, ACELoadingStateError],
+                                  ACELoadingStateNoContent          : @[ACELoadingStateRefreshingContent, ACELoadingStateContentLoaded, ACELoadingStateError],
+                                  ACELoadingStateError              : @[ACELoadingStateLoadingContent, ACELoadingStateRefreshingContent, ACELoadingStateNoContent, ACELoadingStateContentLoaded]
+                                  };
+    }
+    return self;
+}
+
 @end

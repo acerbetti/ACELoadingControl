@@ -23,6 +23,7 @@
 		8056B99C198C5A52001A033B /* ACELoadingControlDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B99B198C5A52001A033B /* ACELoadingControlDemoTests.m */; };
 		8056B9A8198C5BA3001A033B /* ACELoadingStateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B9A7198C5BA3001A033B /* ACELoadingStateManager.m */; };
 		8056B9AB198C5C14001A033B /* ACEStateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B9AA198C5C14001A033B /* ACEStateManager.m */; };
+		8056B9AF198C62A2001A033B /* ACELoadingControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B9AE198C62A2001A033B /* ACELoadingControl.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,8 @@
 		8056B9A7198C5BA3001A033B /* ACELoadingStateManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACELoadingStateManager.m; sourceTree = "<group>"; };
 		8056B9A9198C5C14001A033B /* ACEStateManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACEStateManager.h; sourceTree = "<group>"; };
 		8056B9AA198C5C14001A033B /* ACEStateManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACEStateManager.m; sourceTree = "<group>"; };
+		8056B9AD198C62A2001A033B /* ACELoadingControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACELoadingControl.h; sourceTree = "<group>"; };
+		8056B9AE198C62A2001A033B /* ACELoadingControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACELoadingControl.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +166,8 @@
 			isa = PBXGroup;
 			children = (
 				8056B9AC198C5C1B001A033B /* Base */,
+				8056B9AD198C62A2001A033B /* ACELoadingControl.h */,
+				8056B9AE198C62A2001A033B /* ACELoadingControl.m */,
 				8056B9A6198C5BA3001A033B /* ACELoadingStateManager.h */,
 				8056B9A7198C5BA3001A033B /* ACELoadingStateManager.m */,
 			);
@@ -280,6 +285,7 @@
 				8056B981198C5A52001A033B /* ACEAppDelegate.m in Sources */,
 				8056B9A8198C5BA3001A033B /* ACELoadingStateManager.m in Sources */,
 				8056B9AB198C5C14001A033B /* ACEStateManager.m in Sources */,
+				8056B9AF198C62A2001A033B /* ACELoadingControl.m in Sources */,
 				8056B97D198C5A52001A033B /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
