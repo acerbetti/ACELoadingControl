@@ -15,7 +15,7 @@ extern NSString *const ACELoadingStateInitial;
 extern NSString *const ACELoadingStateLoadingContent;
 
 /// Subsequent loads after the first.
-extern NSString *const AACELoadingStateRefreshingContent;
+extern NSString *const ACELoadingStateRefreshingContent;
 
 /// After content is loaded successfully.
 extern NSString *const ACELoadingStateContentLoaded;

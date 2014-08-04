@@ -7,6 +7,7 @@
 //
 
 #import "ACEViewController.h"
+#import "ACELoadingRequest.h"
 
 @interface ACEViewController ()
 
@@ -24,6 +25,22 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)buttonPressed:(id)sender
+{
+    ACELoadingRequest *request = [ACELoadingRequest new];
+    [request loadContentWithBlock:^(ACELoadingControl *loading) {
+        
+        NSLog(@"Loading init");
+        
+        [loading updateWithNoContent:^(id object) {
+            
+            
+            NSLog(@"Content loaded");
+            
+        }];
+    }];
 }
 
 @end

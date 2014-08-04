@@ -14,6 +14,8 @@ typedef void (^ACELoadingUpdateBlock)(id object);
 
 @property (nonatomic, getter=isCurrent) BOOL current;
 
++ (instancetype)loadingWithCompletionHandler:(void(^)(NSString *state, NSError *error, ACELoadingUpdateBlock update))handler;
+
 /// Signals that this result should be ignored. Sends a nil value for the state to the completion handler.
 - (void)ignore;
 
