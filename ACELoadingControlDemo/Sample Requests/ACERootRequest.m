@@ -17,7 +17,7 @@
 
 - (void)notifyContentLoadedWithError:(NSError *)error
 {
-    
+    NSLog(@"Content loaded notification");
 }
 
 @end

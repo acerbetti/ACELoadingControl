@@ -14,7 +14,7 @@
 #import "ACERootRequest.h"
 
 @interface ACEViewController ()
-
+@property (nonatomic, strong) ACERootRequest *requestWithData;
 @end
 
 @implementation ACEViewController
@@ -34,15 +34,15 @@
 - (IBAction)buttonPressed:(id)sender
 {
     // parent
-    ACERootRequest *requestWithData = [[ACERootRequest alloc] init];
+    self.requestWithData = [[ACERootRequest alloc] init];
     
     // childrens
-    [requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child A"]];
-    [requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child B"]];
-    [requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child C"]];
+    [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child A"]];
+    [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child B"]];
+    [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child C"]];
     
     // start
-    [requestWithData loadRequest];
+    [self.requestWithData loadRequest];
 }
 
 @end

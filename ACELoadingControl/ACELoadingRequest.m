@@ -107,7 +107,7 @@
         
     } else {
         [self notifyBatchUpdate:^{
-            // Run pending updates
+            // run pending updates
             [self executePendingUpdates];
             
             if (update) {
@@ -148,7 +148,7 @@
 {
     if (request != nil) {
         // reset the delegate
-        request.delegate = self;
+        request.delegate = nil;
         
         // remove from the list of children
         [self.childRequests removeObject:request];
