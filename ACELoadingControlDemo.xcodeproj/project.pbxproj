@@ -25,6 +25,10 @@
 		8056B9AB198C5C14001A033B /* ACEStateManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B9AA198C5C14001A033B /* ACEStateManager.m */; };
 		8056B9AF198C62A2001A033B /* ACELoadingControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B9AE198C62A2001A033B /* ACELoadingControl.m */; };
 		8056B9B519900439001A033B /* ACELoadingRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B9B419900439001A033B /* ACELoadingRequest.m */; };
+		8056B9BB1990478E001A033B /* ACEEmptyRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B9BA1990478E001A033B /* ACEEmptyRequest.m */; };
+		8056B9BE19904834001A033B /* ACEDataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B9BD19904834001A033B /* ACEDataRequest.m */; };
+		8056B9C11990484F001A033B /* ACEErrorRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B9C01990484F001A033B /* ACEErrorRequest.m */; };
+		8056B9C419904DDE001A033B /* ACERootRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8056B9C319904DDE001A033B /* ACERootRequest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +69,14 @@
 		8056B9AE198C62A2001A033B /* ACELoadingControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACELoadingControl.m; sourceTree = "<group>"; };
 		8056B9B319900439001A033B /* ACELoadingRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACELoadingRequest.h; sourceTree = "<group>"; };
 		8056B9B419900439001A033B /* ACELoadingRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACELoadingRequest.m; sourceTree = "<group>"; };
+		8056B9B91990478E001A033B /* ACEEmptyRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACEEmptyRequest.h; sourceTree = "<group>"; };
+		8056B9BA1990478E001A033B /* ACEEmptyRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACEEmptyRequest.m; sourceTree = "<group>"; };
+		8056B9BC19904834001A033B /* ACEDataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACEDataRequest.h; sourceTree = "<group>"; };
+		8056B9BD19904834001A033B /* ACEDataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACEDataRequest.m; sourceTree = "<group>"; };
+		8056B9BF1990484F001A033B /* ACEErrorRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACEErrorRequest.h; sourceTree = "<group>"; };
+		8056B9C01990484F001A033B /* ACEErrorRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACEErrorRequest.m; sourceTree = "<group>"; };
+		8056B9C219904DDE001A033B /* ACERootRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACERootRequest.h; sourceTree = "<group>"; };
+		8056B9C319904DDE001A033B /* ACERootRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACERootRequest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +137,7 @@
 		8056B976198C5A52001A033B /* ACELoadingControlDemo */ = {
 			isa = PBXGroup;
 			children = (
+				8056B9B81990477A001A033B /* Sample Requests */,
 				8056B97F198C5A52001A033B /* ACEAppDelegate.h */,
 				8056B980198C5A52001A033B /* ACEAppDelegate.m */,
 				8056B985198C5A52001A033B /* ACEViewController.h */,
@@ -186,6 +199,21 @@
 				8056B9AA198C5C14001A033B /* ACEStateManager.m */,
 			);
 			name = Base;
+			sourceTree = "<group>";
+		};
+		8056B9B81990477A001A033B /* Sample Requests */ = {
+			isa = PBXGroup;
+			children = (
+				8056B9BC19904834001A033B /* ACEDataRequest.h */,
+				8056B9BD19904834001A033B /* ACEDataRequest.m */,
+				8056B9B91990478E001A033B /* ACEEmptyRequest.h */,
+				8056B9BA1990478E001A033B /* ACEEmptyRequest.m */,
+				8056B9BF1990484F001A033B /* ACEErrorRequest.h */,
+				8056B9C01990484F001A033B /* ACEErrorRequest.m */,
+				8056B9C219904DDE001A033B /* ACERootRequest.h */,
+				8056B9C319904DDE001A033B /* ACERootRequest.m */,
+			);
+			path = "Sample Requests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -286,11 +314,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8056B9C419904DDE001A033B /* ACERootRequest.m in Sources */,
 				8056B987198C5A52001A033B /* ACEViewController.m in Sources */,
 				8056B981198C5A52001A033B /* ACEAppDelegate.m in Sources */,
 				8056B9A8198C5BA3001A033B /* ACELoadingStateManager.m in Sources */,
 				8056B9AB198C5C14001A033B /* ACEStateManager.m in Sources */,
 				8056B9AF198C62A2001A033B /* ACELoadingControl.m in Sources */,
+				8056B9BE19904834001A033B /* ACEDataRequest.m in Sources */,
+				8056B9C11990484F001A033B /* ACEErrorRequest.m in Sources */,
+				8056B9BB1990478E001A033B /* ACEEmptyRequest.m in Sources */,
 				8056B97D198C5A52001A033B /* main.m in Sources */,
 				8056B9B519900439001A033B /* ACELoadingRequest.m in Sources */,
 			);

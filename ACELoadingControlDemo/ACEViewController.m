@@ -7,7 +7,11 @@
 //
 
 #import "ACEViewController.h"
-#import "ACELoadingRequest.h"
+
+#import "ACEDataRequest.h"
+#import "ACEEmptyRequest.h"
+#import "ACEErrorRequest.h"
+#import "ACERootRequest.h"
 
 @interface ACEViewController ()
 
@@ -29,19 +33,16 @@
 
 - (IBAction)buttonPressed:(id)sender
 {
-    ACELoadingRequest *request = [ACELoadingRequest new];
-    [request loadContentWithBlock:^(ACELoadingControl *loading) {
-        
-        NSLog(@"Loading init");
-        
-        [loading updateWithContent:^(id object) {
-            NSLog(@"Content loaded");
-        }];
-        
-//        [loading updateWithNoContent:^(id object) {
-//            NSLog(@"Content loaded, no results");
-//        }];
-    }];
+    // parent
+    ACERootRequest *requestWithData = [[ACERootRequest alloc] init];
+    
+    // childrens
+    [requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child A"]];
+    [requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child B"]];
+    [requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child C"]];
+    
+    // start
+    [requestWithData loadRequest];
 }
 
 @end
