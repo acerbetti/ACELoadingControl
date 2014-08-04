@@ -12,8 +12,11 @@
 @interface ACELoadingRequest ()
 @property (nonatomic, strong) ACELoadingStateManager *stateMachine;
 @property (nonatomic, strong) ACELoadingControl *loadingInstance;
-@property (nonatomic, assign) BOOL loadingComplete;
+
 @property (nonatomic, copy) dispatch_block_t pendingUpdateBlock;
+@property (nonatomic, assign) BOOL loadingComplete;
+
+@property (nonatomic, strong) NSMutableSet *childRequests;
 @end
 
 #pragma mark -
@@ -21,6 +24,14 @@
 @implementation ACELoadingRequest
 
 #pragma mark - Properties
+
+- (NSMutableSet *)childRequests
+{
+    if (_childRequests == nil) {
+        _childRequests = [NSMutableSet set];
+    }
+    return _childRequests;
+}
 
 - (ACELoadingStateManager *)stateMachine
 {
@@ -30,7 +41,20 @@
     return _stateMachine;
 }
 
+- (NSString *)loadingState
+{
+    return self.stateMachine.currentState;
+}
+
+
 #pragma mark - Actions
+
+- (void)loadRequest
+{
+    for (ACELoadingRequest *request in self.childRequests) {
+        [request loadRequest];
+    }
+}
 
 - (void)loadContentWithBlock:(ACELoadingBlock)block
 {
@@ -39,13 +63,13 @@
     __weak typeof(self) weakSelf = self;
     
     ACELoadingControl *loading = [ACELoadingControl loadingWithCompletionHandler:^(NSString *newState, NSError *error, ACELoadingUpdateBlock update) {
-        if (!newState)
-            return;
-        
-        [self endLoadingWithState:newState error:error update:^{
-            if (update != nil)
-                update(weakSelf);
-        }];
+        if (newState != nil) {            
+            [self endLoadingWithState:newState error:error update:^{
+                if (update != nil) {
+                    update(weakSelf);
+                }
+            }];
+        }
     }];
     
     // Tell previous loading instance it's no longer current and remember this loading instance
@@ -60,7 +84,7 @@
 {
     self.loadingComplete = NO;
     
-    NSString *currentState = self.stateMachine.currentState;
+    NSString *currentState = [self loadingState];
     if ([currentState isEqualToString:ACELoadingStateInitial] || [currentState isEqualToString:ACELoadingStateLoadingContent]) {
         self.stateMachine.currentState = ACELoadingStateLoadingContent;
         
@@ -80,11 +104,12 @@
         if (update) {
             [self enqueuePendingUpdateBlock:update];
         }
-    }
-    else {
+        
+    } else {
         [self notifyBatchUpdate:^{
             // Run pending updates
             [self executePendingUpdates];
+            
             if (update) {
                 update();
             }
@@ -97,15 +122,46 @@
 
 - (BOOL)shouldDisplayPlaceholder
 {
-    return NO;
+    // Only display a placeholder when we're loading or have no content
+    NSString *loadingState = self.loadingState;
+    if (![loadingState isEqualToString:ACELoadingStateLoadingContent] && ![loadingState isEqualToString:ACELoadingStateNoContent])
+        return NO;
+    
+    return YES;
 }
+
+
+#pragma mark - Dependencies
+
+- (void)addChildRequest:(ACELoadingRequest *)request
+{
+    if (request != nil) {
+        // set the delegate to self to get the notifications
+        request.delegate = self;
+        
+        // add to the list of children
+        [self.childRequests addObject:request];
+    }
+}
+
+- (void)removeChildRequest:(ACELoadingRequest *)request
+{
+    if (request != nil) {
+        // reset the delegate
+        request.delegate = self;
+        
+        // remove from the list of children
+        [self.childRequests removeObject:request];
+    }
+}
+
 
 #pragma mark - Notifications
 
 - (void)executePendingUpdates
 {
-    dispatch_block_t block = _pendingUpdateBlock;
-    _pendingUpdateBlock = nil;
+    dispatch_block_t block = self.pendingUpdateBlock;
+    self.pendingUpdateBlock = nil;
     
     if (block) {
         block();
@@ -116,8 +172,8 @@
 {
     dispatch_block_t update;
     
-    if (_pendingUpdateBlock) {
-        dispatch_block_t oldPendingUpdate = _pendingUpdateBlock;
+    if (self.pendingUpdateBlock) {
+        dispatch_block_t oldPendingUpdate = self.pendingUpdateBlock;
         
         update = ^{
             oldPendingUpdate();
@@ -127,9 +183,9 @@
     } else {
         update = block;
     }
+    
     self.pendingUpdateBlock = update;
 }
-
 
 - (void)notifyWillLoadContent
 {

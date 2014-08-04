@@ -34,12 +34,13 @@
         
         NSLog(@"Loading init");
         
-        [loading updateWithNoContent:^(id object) {
-            
-            
+        [loading updateWithContent:^(id object) {
             NSLog(@"Content loaded");
-            
         }];
+        
+//        [loading updateWithNoContent:^(id object) {
+//            NSLog(@"Content loaded, no results");
+//        }];
     }];
 }
 
