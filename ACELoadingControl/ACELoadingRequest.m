@@ -31,6 +31,7 @@
 @property (nonatomic, assign) BOOL loadingComplete;
 
 @property (nonatomic, strong) NSMutableSet *childRequests;
+@property (nonatomic, strong) NSMutableSet *pendingRequests;
 @end
 
 #pragma mark -
@@ -46,6 +47,15 @@
     }
     return _childRequests;
 }
+
+- (NSMutableSet *)pendingRequests
+{
+    if (_pendingRequests == nil) {
+        _pendingRequests = [NSMutableSet set];
+    }
+    return _pendingRequests;
+}
+
 
 - (ACELoadingStateManager *)stateMachine
 {
@@ -130,10 +140,10 @@
               if (update) {
                   update();
               }
-          }
-             complete:nil];
+              
+          } complete:nil];
     }
-
+    
     self.loadingComplete = YES;
     
     [self request:self loadedWithError:error];
@@ -174,6 +184,56 @@
     }
 }
 
+- (void)updateLoadingState
+{
+    // let's find out what our state should be by asking our data sources
+    NSInteger numberOfLoading = 0;
+    NSInteger numberOfRefreshing = 0;
+    NSInteger numberOfError = 0;
+    NSInteger numberOfLoaded = 0;
+    NSInteger numberOfNoContent = 0;
+    
+    NSSet *loadingStates = [self.childRequests valueForKey:@"loadingState"];
+    loadingStates = [loadingStates setByAddingObject:self.loadingState];
+    
+    for (NSString *state in loadingStates) {
+        if ([state isEqualToString:ACELoadingStateLoadingContent])
+            numberOfLoading++;
+        
+        else if ([state isEqualToString:ACELoadingStateRefreshingContent])
+            numberOfRefreshing++;
+        
+        else if ([state isEqualToString:ACELoadingStateError])
+            numberOfError++;
+        
+        else if ([state isEqualToString:ACELoadingStateContentLoaded])
+            numberOfLoaded++;
+        
+        else if ([state isEqualToString:ACELoadingStateNoContent])
+            numberOfNoContent++;
+    }
+    
+    // Always prefer loading
+    if (numberOfLoading) {
+        [self.stateMachine applyState:ACELoadingStateLoadingContent];
+        
+    } else if (numberOfRefreshing) {
+        [self.stateMachine applyState:ACELoadingStateRefreshingContent];
+        
+    } else if (numberOfError) {
+        [self.stateMachine applyState:ACELoadingStateError];
+        
+    } else if (numberOfNoContent) {
+        [self.stateMachine applyState:ACELoadingStateNoContent];
+        
+    } else if (numberOfLoaded) {
+        [self.stateMachine applyState:ACELoadingStateContentLoaded];
+        
+    } else {
+        [self.stateMachine applyState:ACELoadingStateInitial];
+    }
+}
+
 
 #pragma mark - Notifications
 
@@ -208,6 +268,15 @@
 
 - (void)loadingRequest:(ACELoadingRequest *)request
 {
+    if (self != request) {
+        // add the request to the pending queue
+        [self.pendingRequests addObject:request];
+        
+        // update the state of the parent request
+        [self.stateMachine applyState:request.loadingState];
+    }
+    
+    // nofify the delegate
     if ([self.delegate respondsToSelector:@selector(loadingRequest:)]) {
         [self.delegate loadingRequest:request];
     }
@@ -231,8 +300,30 @@
 
 - (void)request:(ACELoadingRequest *)request loadedWithError:(NSError *)error
 {
+    if (self != request) {
+        // remove the request from the queue
+        [self.pendingRequests removeObject:request];
+        
+        // if there are no pending requests
+        if (self.pendingRequests.count == 0) {
+            [self.stateMachine applyState:ACELoadingStateContentLoaded];
+        }
+    }
+    
+    BOOL showingPlaceholder = self.shouldDisplayPlaceholder;
+    [self updateLoadingState];
+    
+    // We were showing the placehoder and now we're not
+    if (showingPlaceholder && !self.shouldDisplayPlaceholder) {
+        [self request:request batchUpdate:^{
+            [self executePendingUpdates];
+            
+        } complete:nil];
+    }
+    
+    // nofify the delegate
     if ([self.delegate respondsToSelector:@selector(request:loadedWithError:)]) {
-        [self.delegate request:self loadedWithError:error];
+        [self.delegate request:request loadedWithError:error];
     }
 }
 

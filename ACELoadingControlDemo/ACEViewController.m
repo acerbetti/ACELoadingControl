@@ -22,7 +22,20 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    
+    // parent
+    self.requestWithData = [[ACERootRequest alloc] init];
+    self.requestWithData.delegate = self;
+    
+    ACEDataRequest *child = [[ACEDataRequest alloc] initWithName:@"Child B"];
+    [child addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child B.1"]];
+    [child addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child B.2"]];
+    [child addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child B.4"]];
+    
+    // childrens
+    [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child A"]];
+    [self.requestWithData addChildRequest:child];
+    [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child C"]];
 }
 
 - (void)didReceiveMemoryWarning
@@ -33,15 +46,6 @@
 
 - (IBAction)buttonPressed:(id)sender
 {
-    // parent
-    self.requestWithData = [[ACERootRequest alloc] init];
-    self.requestWithData.delegate = self;
-    
-    // childrens
-    [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child A"]];
-    [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child B"]];
-    [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child C"]];
-    
     // start
     [self.requestWithData loadRequest];
 }
