@@ -7,7 +7,6 @@
 //
 
 #import "ACELoadingRequest.h"
-#import "ACELoadingStateManager.h"
 
 @interface ACELoadingRequest ()
 @property (nonatomic, strong) ACELoadingStateManager *stateMachine;
@@ -37,6 +36,7 @@
 {
     if (_stateMachine == nil) {
         _stateMachine = [ACELoadingStateManager new];
+        _stateMachine.delegate = self;
     }
     return _stateMachine;
 }
@@ -86,10 +86,10 @@
     
     NSString *currentState = [self loadingState];
     if ([currentState isEqualToString:ACELoadingStateInitial] || [currentState isEqualToString:ACELoadingStateLoadingContent]) {
-        self.stateMachine.currentState = ACELoadingStateLoadingContent;
+        [self.stateMachine applyState:ACELoadingStateLoadingContent];
         
     } else {
-        self.stateMachine.currentState = ACELoadingStateRefreshingContent;
+        [self.stateMachine applyState:ACELoadingStateRefreshingContent];
     }
     
     [self notifyWillLoadContent];
@@ -98,7 +98,7 @@
 - (void)endLoadingWithState:(NSString *)state error:(NSError *)error update:(dispatch_block_t)update
 {
 //    self.loadingError = error;
-    self.stateMachine.currentState = state;
+    [self.stateMachine applyState:state];
 
     if (self.shouldDisplayPlaceholder) {
         if (update) {

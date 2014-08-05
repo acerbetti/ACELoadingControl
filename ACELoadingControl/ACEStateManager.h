@@ -8,16 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+@class ACEStateManager;
+
 @protocol ACEStateManagerDelegate <NSObject>
 
 @optional
 
 // Completely generic state change hook
-- (void)stateWillChange;
-- (void)stateDidChange;
+- (void)stateWillChange:(ACEStateManager *)stateManager;
+- (void)stateDidChange:(ACEStateManager *)stateManager;
 
 /// Return the new state or nil for no change for an missing transition from a state to another state. If implemented, overrides the base implementation completely.
-- (NSString *)missingTransitionFromState:(NSString *)fromState toState:(NSString *)toState;
+- (NSString *)stateManager:(ACEStateManager *)stateManager missingTransitionFromState:(NSString *)fromState toState:(NSString *)toState;
 
 @end
 

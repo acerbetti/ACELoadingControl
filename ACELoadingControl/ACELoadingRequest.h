@@ -7,6 +7,7 @@
 //
 
 #import "ACELoadingControl.h"
+#import "ACELoadingStateManager.h"
 
 typedef void (^ACELoadingBlock)(ACELoadingControl *loading);
 
@@ -21,7 +22,7 @@ typedef void (^ACELoadingBlock)(ACELoadingControl *loading);
 @end
 
 
-@interface ACELoadingRequest : NSObject<ACELoadingRequestDelegate>
+@interface ACELoadingRequest : NSObject<ACELoadingRequestDelegate, ACEStateManagerDelegate>
 
 @property (nonatomic, weak) id<ACELoadingRequestDelegate> delegate;
 @property (nonatomic, readonly) NSString *loadingState;

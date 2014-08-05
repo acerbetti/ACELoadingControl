@@ -34,4 +34,12 @@
     }];
 }
 
+
+#pragma mark - State Machine Delegate
+
+- (void)stateDidChange:(ACEStateManager *)stateManager
+{
+    NSLog(@"%@ changed state to %@", _name, stateManager.currentState);
+}
+
 @end

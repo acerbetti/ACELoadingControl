@@ -35,11 +35,8 @@
     // ...send will-change message for downstream KVO support...
     id target = [self target];
     
-    SEL genericWillChangeAction = @selector(stateWillChange);
-    if ([target respondsToSelector:genericWillChangeAction]) {
-        typedef void (*ObjCMsgSendReturnVoid)(id, SEL);
-        ObjCMsgSendReturnVoid sendMsgReturnVoid = (ObjCMsgSendReturnVoid)objc_msgSend;
-        sendMsgReturnVoid(target, genericWillChangeAction);
+    if ([target respondsToSelector:@selector(stateWillChange:)]) {
+        [target stateWillChange:self];
     }
     
     OSSpinLockLock(&_lock);
@@ -69,7 +66,7 @@
     
     // Raise exception if attempting to transition to nil -- you can only transition *from* nil
     if (!toState) {
-        toState = [self missingTransitionFromState:fromState toState:toState];
+        toState = [self stateManager:self missingTransitionFromState:fromState toState:toState];
         if (!toState) {
             return nil;
         }
@@ -97,7 +94,7 @@
                 return nil;
             }
             
-            toState = [self missingTransitionFromState:fromState toState:toState];
+            toState = [self stateManager:self missingTransitionFromState:fromState toState:toState];
             if (!toState)
                 return nil;
         }
@@ -110,7 +107,7 @@
     
     SEL enterStateAction = NSSelectorFromString([@"shouldEnter" stringByAppendingString:toState]);
     if ([target respondsToSelector:enterStateAction] && !sendMsgReturnBool(target, enterStateAction)) {
-        toState = [self missingTransitionFromState:fromState toState:toState];
+        toState = [self stateManager:self missingTransitionFromState:fromState toState:toState];
     }
     
     return toState;
@@ -142,19 +139,18 @@
         sendMsgReturnVoid(target, transitionAction);
     }
     
-    SEL genericDidChangeAction = @selector(stateDidChange);
-    if ([target respondsToSelector:genericDidChangeAction]) {
-        sendMsgReturnVoid(target, genericDidChangeAction);
+    if ([target respondsToSelector:@selector(stateDidChange:)]) {
+        [target stateDidChange:self];
     }
 }
 
 
 #pragma mark - Error handler
 
-- (NSString *)missingTransitionFromState:(NSString *)fromState toState:(NSString *)toState
+- (NSString *)stateManager:(ACEStateManager *)stateManager missingTransitionFromState:(NSString *)fromState toState:(NSString *)toState
 {
-    if ([self.delegate respondsToSelector:@selector(missingTransitionFromState:toState:)]) {
-        return [self.delegate missingTransitionFromState:fromState toState:toState];
+    if ([self.delegate respondsToSelector:@selector(stateManager:missingTransitionFromState:toState:)]) {
+        return [self.delegate stateManager:self missingTransitionFromState:fromState toState:toState];
         
     } else {
         [NSException raise:@"IllegalStateTransition" format:@"cannot transition from %@ to %@", fromState, toState];
