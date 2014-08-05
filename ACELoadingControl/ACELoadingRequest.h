@@ -26,13 +26,13 @@
 
 typedef void (^ACELoadingBlock)(ACELoadingControl *loading);
 
-
+@class ACELoadingRequest;
 @protocol ACELoadingRequestDelegate <NSObject>
 
 @optional
-- (void)notifyWillLoadContent;
-- (void)notifyContentLoadedWithError:(NSError *)error;
-- (void)notifyBatchUpdate:(dispatch_block_t)update complete:(dispatch_block_t)complete;
+- (void)loadingRequest:(ACELoadingRequest *)request;
+- (void)request:(ACELoadingRequest *)request batchUpdate:(dispatch_block_t)update complete:(dispatch_block_t)complete;
+- (void)request:(ACELoadingRequest *)request loadedWithError:(NSError *)error;
 
 @end
 

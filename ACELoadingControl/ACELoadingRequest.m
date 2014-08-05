@@ -107,7 +107,7 @@
         [self.stateMachine applyState:ACELoadingStateRefreshingContent];
     }
     
-    [self notifyWillLoadContent];
+    [self loadingRequest:self];
 }
 
 - (void)endLoadingWithState:(NSString *)state error:(NSError *)error update:(dispatch_block_t)update
@@ -121,18 +121,22 @@
         }
         
     } else {
-        [self notifyBatchUpdate:^{
-            // run pending updates
-            [self executePendingUpdates];
-            
-            if (update) {
-                update();
-            }
-        } complete:nil];
+        [self request:self
+          batchUpdate:^{
+              
+              // run pending updates
+              [self executePendingUpdates];
+              
+              if (update) {
+                  update();
+              }
+          }
+             complete:nil];
     }
 
     self.loadingComplete = YES;
-    [self notifyContentLoadedWithError:error];
+    
+    [self request:self loadedWithError:error];
 }
 
 - (BOOL)shouldDisplayPlaceholder
@@ -202,24 +206,17 @@
     self.pendingUpdateBlock = update;
 }
 
-- (void)notifyWillLoadContent
+- (void)loadingRequest:(ACELoadingRequest *)request
 {
-    if ([self.delegate respondsToSelector:@selector(notifyWillLoadContent)]) {
-        [self.delegate notifyWillLoadContent];
+    if ([self.delegate respondsToSelector:@selector(loadingRequest:)]) {
+        [self.delegate loadingRequest:request];
     }
 }
 
-- (void)notifyContentLoadedWithError:(NSError *)error
+- (void)request:(ACELoadingRequest *)request batchUpdate:(dispatch_block_t)update complete:(dispatch_block_t)complete
 {
-    if ([self.delegate respondsToSelector:@selector(notifyContentLoadedWithError:)]) {
-        [self.delegate notifyContentLoadedWithError:error];
-    }
-}
-
-- (void)notifyBatchUpdate:(dispatch_block_t)update complete:(dispatch_block_t)complete
-{
-    if ([self.delegate respondsToSelector:@selector(notifyBatchUpdate:complete:)]) {
-        [self.delegate notifyBatchUpdate:update complete:complete];
+    if ([self.delegate respondsToSelector:@selector(request:batchUpdate:complete:)]) {
+        [self.delegate request:self batchUpdate:update complete:complete];
     
     } else {
         if (update) {
@@ -229,6 +226,13 @@
         if (complete) {
             complete();
         }
+    }
+}
+
+- (void)request:(ACELoadingRequest *)request loadedWithError:(NSError *)error
+{
+    if ([self.delegate respondsToSelector:@selector(request:loadedWithError:)]) {
+        [self.delegate request:self loadedWithError:error];
     }
 }
 

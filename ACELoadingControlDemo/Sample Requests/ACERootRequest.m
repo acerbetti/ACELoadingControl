@@ -15,9 +15,22 @@
     [super loadRequest];
 }
 
+- (void)loadingRequest:(ACELoadingRequest *)request loadingWithState:(NSString *)state
+{
+    
+}
+
 - (void)notifyContentLoadedWithError:(NSError *)error
 {
     NSLog(@"Parent: content loaded notification.");
+}
+
+
+#pragma mark - State Machine Delegate
+
+- (void)stateDidChange:(ACEStateManager *)stateManager
+{
+    NSLog(@"Parent: changed state to %@.", stateManager.currentState);
 }
 
 @end
