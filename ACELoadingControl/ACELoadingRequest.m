@@ -31,7 +31,6 @@
 @property (nonatomic, assign) BOOL loadingComplete;
 
 @property (nonatomic, strong) NSMutableSet *childRequests;
-@property (nonatomic, strong) NSMutableSet *pendingRequests;
 @end
 
 #pragma mark -
@@ -47,15 +46,6 @@
     }
     return _childRequests;
 }
-
-- (NSMutableSet *)pendingRequests
-{
-    if (_pendingRequests == nil) {
-        _pendingRequests = [NSMutableSet set];
-    }
-    return _pendingRequests;
-}
-
 
 - (ACELoadingStateManager *)stateMachine
 {
@@ -268,14 +258,6 @@
 
 - (void)loadingRequest:(ACELoadingRequest *)request
 {
-    if (self != request) {
-        // add the request to the pending queue
-        [self.pendingRequests addObject:request];
-        
-        // update the state of the parent request
-        [self.stateMachine applyState:request.loadingState];
-    }
-    
     // nofify the delegate
     if ([self.delegate respondsToSelector:@selector(loadingRequest:)]) {
         [self.delegate loadingRequest:request];
@@ -300,16 +282,6 @@
 
 - (void)request:(ACELoadingRequest *)request loadedWithError:(NSError *)error
 {
-    if (self != request) {
-        // remove the request from the queue
-        [self.pendingRequests removeObject:request];
-        
-        // if there are no pending requests
-        if (self.pendingRequests.count == 0) {
-            [self.stateMachine applyState:ACELoadingStateContentLoaded];
-        }
-    }
-    
     BOOL showingPlaceholder = self.shouldDisplayPlaceholder;
     [self updateLoadingState];
     
