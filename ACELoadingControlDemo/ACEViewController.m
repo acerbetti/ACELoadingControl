@@ -13,7 +13,7 @@
 #import "ACEErrorRequest.h"
 #import "ACERootRequest.h"
 
-@interface ACEViewController ()
+@interface ACEViewController ()<ACELoadingRequestDelegate>
 @property (nonatomic, strong) ACERootRequest *requestWithData;
 @end
 
@@ -35,6 +35,7 @@
 {
     // parent
     self.requestWithData = [[ACERootRequest alloc] init];
+    self.requestWithData.delegate = self;
     
     // childrens
     [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child A"]];

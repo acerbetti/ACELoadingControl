@@ -26,10 +26,10 @@
     [super loadRequest];
     
     [self loadContentWithBlock:^(ACELoadingControl *loading) {
-        NSLog(@"Loading %@", _name);
+        NSLog(@"%@: loading...", _name);
         
         [loading updateWithContent:^(id object) {
-            NSLog(@"Content loaded for %@", _name);
+            NSLog(@"%@: content loaded.", _name);
         }];
     }];
 }
@@ -39,7 +39,7 @@
 
 - (void)stateDidChange:(ACEStateManager *)stateManager
 {
-    NSLog(@"%@ changed state to %@", _name, stateManager.currentState);
+    NSLog(@"%@: changed state to %@.", _name, stateManager.currentState);
 }
 
 @end
