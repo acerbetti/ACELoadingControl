@@ -24,18 +24,18 @@
     [super viewDidLoad];
     
     // parent
-    self.requestWithData = [[ACERootRequest alloc] init];
+    self.requestWithData = [[ACERootRequest alloc] initWithRequestId:@"Root"];
     self.requestWithData.delegate = self;
     
-    ACEDataRequest *child = [[ACEDataRequest alloc] initWithName:@"Child B"];
-    [child addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child B.1"]];
-    [child addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child B.2"]];
-    [child addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child B.4"]];
+    ACERootRequest *child = [[ACERootRequest alloc] initWithRequestId:@"Child B"];
+    [child addChildRequest:[[ACEDataRequest alloc] initWithRequestId:@"Child B.1"]];
+    [child addChildRequest:[[ACEDataRequest alloc] initWithRequestId:@"Child B.2"]];
+    [child addChildRequest:[[ACEDataRequest alloc] initWithRequestId:@"Child B.4"]];
     
     // childrens
-    [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child A"]];
+    [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithRequestId:@"Child A"]];
     [self.requestWithData addChildRequest:child];
-    [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithName:@"Child C"]];
+    [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithRequestId:@"Child C"]];
 }
 
 - (void)didReceiveMemoryWarning

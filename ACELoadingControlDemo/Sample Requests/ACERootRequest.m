@@ -20,9 +20,10 @@
     
 }
 
-- (void)notifyContentLoadedWithError:(NSError *)error
+- (void)request:(ACELoadingRequest *)request loadedWithError:(NSError *)error
 {
-    NSLog(@"Parent: content loaded notification.");
+//    NSLog(@"Update notification.");
+    [super request:request loadedWithError:error];
 }
 
 
@@ -30,7 +31,7 @@
 
 - (void)stateDidChange:(ACEStateManager *)stateManager
 {
-    NSLog(@"Parent: changed state to %@.", stateManager.currentState);
+    NSLog(@"%@: changed state to %@.", self.requestId, stateManager.currentState);
 }
 
 @end

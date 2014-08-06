@@ -8,28 +8,17 @@
 
 #import "ACEDataRequest.h"
 
-@implementation ACEDataRequest {
-    NSString *_name;
-}
-
-- (instancetype)initWithName:(NSString *)name
-{
-    self = [super init];
-    if (self) {
-        _name = name;
-    }
-    return self;
-}
+@implementation ACEDataRequest
 
 - (void)loadRequest
 {
     [super loadRequest];
     
     [self loadContentWithBlock:^(ACELoadingControl *loading) {
-        NSLog(@"%@: loading...", _name);
+        NSLog(@"%@: loading...", self.requestId);
         
         [loading updateWithContent:^(id object) {
-            NSLog(@"%@: content loaded.", _name);
+            NSLog(@"%@: content loaded.", self.requestId);
         }];
     }];
 }
@@ -39,7 +28,7 @@
 
 - (void)stateDidChange:(ACEStateManager *)stateManager
 {
-    NSLog(@"%@: changed state to %@.", _name, stateManager.currentState);
+    NSLog(@"%@: changed state to %@.", self.requestId, stateManager.currentState);
 }
 
 @end

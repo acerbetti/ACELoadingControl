@@ -10,6 +10,4 @@
 
 @interface ACEDataRequest : ACELoadingRequest
 
-- (instancetype)initWithName:(NSString *)name;
-
 @end

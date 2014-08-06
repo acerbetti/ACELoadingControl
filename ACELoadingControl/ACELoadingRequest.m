@@ -35,7 +35,19 @@
 
 #pragma mark -
 
-@implementation ACELoadingRequest
+@implementation ACELoadingRequest {
+    NSString *_requestId;
+}
+
+- (instancetype)initWithRequestId:(NSString *)requestId
+{
+    self = [super init];
+    if (self) {
+        _requestId = requestId;
+    }
+    return self;
+}
+
 
 #pragma mark - Properties
 
@@ -59,6 +71,11 @@
 - (NSString *)loadingState
 {
     return self.stateMachine.currentState;
+}
+
+- (NSString *)requestId
+{
+    return _requestId;
 }
 
 
@@ -184,7 +201,6 @@
     NSInteger numberOfNoContent = 0;
     
     NSSet *loadingStates = [self.childRequests valueForKey:@"loadingState"];
-    loadingStates = [loadingStates setByAddingObject:self.loadingState];
     
     for (NSString *state in loadingStates) {
         if ([state isEqualToString:ACELoadingStateLoadingContent])
@@ -262,6 +278,9 @@
     if ([self.delegate respondsToSelector:@selector(loadingRequest:)]) {
         [self.delegate loadingRequest:request];
     }
+
+    // update the status
+    [self updateLoadingState];
 }
 
 - (void)request:(ACELoadingRequest *)request batchUpdate:(dispatch_block_t)update complete:(dispatch_block_t)complete
@@ -282,6 +301,12 @@
 
 - (void)request:(ACELoadingRequest *)request loadedWithError:(NSError *)error
 {
+    // nofify the delegate
+    if ([self.delegate respondsToSelector:@selector(request:loadedWithError:)]) {
+        [self.delegate request:request loadedWithError:error];
+    }
+    
+    // update the block in case was pending
     BOOL showingPlaceholder = self.shouldDisplayPlaceholder;
     [self updateLoadingState];
     
@@ -291,11 +316,6 @@
             [self executePendingUpdates];
             
         } complete:nil];
-    }
-    
-    // nofify the delegate
-    if ([self.delegate respondsToSelector:@selector(request:loadedWithError:)]) {
-        [self.delegate request:request loadedWithError:error];
     }
 }
 

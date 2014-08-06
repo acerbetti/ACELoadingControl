@@ -40,7 +40,11 @@ typedef void (^ACELoadingBlock)(ACELoadingControl *loading);
 @interface ACELoadingRequest : NSObject<ACELoadingRequestDelegate, ACEStateManagerDelegate>
 
 @property (nonatomic, weak) id<ACELoadingRequestDelegate> delegate;
+
+@property (nonatomic, readonly) NSString *requestId;
 @property (nonatomic, readonly) NSString *loadingState;
+
+- (instancetype)initWithRequestId:(NSString *)requestId;
 
 - (void)loadContentWithBlock:(ACELoadingBlock)block;
 - (void)loadRequest NS_REQUIRES_SUPER;
