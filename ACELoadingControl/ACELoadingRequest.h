@@ -26,23 +26,15 @@
 
 typedef void (^ACELoadingBlock)(ACELoadingControl *loading);
 
-@class ACELoadingRequest;
-@protocol ACELoadingRequestDelegate <NSObject>
 
-@optional
-- (void)loadingRequest:(ACELoadingRequest *)request;
-- (void)request:(ACELoadingRequest *)request batchUpdate:(dispatch_block_t)update complete:(dispatch_block_t)complete;
-- (void)request:(ACELoadingRequest *)request loadedWithError:(NSError *)error;
-
-@end
-
-
-@interface ACELoadingRequest : NSObject<ACELoadingRequestDelegate, ACEStateManagerDelegate>
-
-@property (nonatomic, weak) id<ACELoadingRequestDelegate> delegate;
+@interface ACELoadingRequest : NSObject<ACEStateManagerDelegate>
 
 @property (nonatomic, readonly) NSString *requestId;
+@property (nonatomic, readonly) ACELoadingRequest *parentRequest;
+
 @property (nonatomic, readonly) NSString *loadingState;
+
+
 
 - (instancetype)initWithRequestId:(NSString *)requestId;
 

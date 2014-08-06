@@ -30,6 +30,7 @@
 @property (nonatomic, copy) dispatch_block_t pendingUpdateBlock;
 @property (nonatomic, assign) BOOL loadingComplete;
 
+@property (nonatomic, strong) ACELoadingRequest *parentRequest;
 @property (nonatomic, strong) NSMutableSet *childRequests;
 @end
 
@@ -95,7 +96,7 @@
     __weak typeof(self) weakSelf = self;
     
     ACELoadingControl *loading = [ACELoadingControl loadingWithCompletionHandler:^(NSString *newState, NSError *error, ACELoadingUpdateBlock update) {
-        if (newState != nil) {            
+        if (newState != nil) {
             [self endLoadingWithState:newState error:error update:^{
                 if (update != nil) {
                     update(weakSelf);
@@ -124,36 +125,34 @@
         [self.stateMachine applyState:ACELoadingStateRefreshingContent];
     }
     
-    [self loadingRequest:self];
+    [self notifyWillLoadContent];
 }
 
 - (void)endLoadingWithState:(NSString *)state error:(NSError *)error update:(dispatch_block_t)update
 {
-//    self.loadingError = error;
+    // self.loadingError = error;
     [self.stateMachine applyState:state];
-
+    
     if (self.shouldDisplayPlaceholder) {
         if (update) {
             [self enqueuePendingUpdateBlock:update];
         }
         
     } else {
-        [self request:self
-          batchUpdate:^{
-              
-              // run pending updates
-              [self executePendingUpdates];
-              
-              if (update) {
-                  update();
-              }
-              
-          } complete:nil];
+        [self executeBatchUpdate:^{
+            // run pending updates
+            [self executePendingUpdates];
+            
+            if (update) {
+                update();
+            }
+            
+        } complete:nil];
     }
     
     self.loadingComplete = YES;
     
-    [self request:self loadedWithError:error];
+    [self notifyContentLoadedWithError:error];
 }
 
 - (BOOL)shouldDisplayPlaceholder
@@ -167,13 +166,26 @@
 }
 
 
+#pragma mark - KVO
+
+- (void)stateWillChange:(ACEStateManager *)stateManager
+{
+    [self willChangeValueForKey:@"loadingState"];
+}
+
+- (void)stateDidChange:(ACEStateManager *)stateManager
+{
+    [self didChangeValueForKey:@"loadingState"];
+}
+
+
 #pragma mark - Dependencies
 
 - (void)addChildRequest:(ACELoadingRequest *)request
 {
     if (request != nil) {
-        // set the delegate to self to get the notifications
-        request.delegate = self;
+        // set the parent request
+        request.parentRequest = self;
         
         // add to the list of children
         [self.childRequests addObject:request];
@@ -183,8 +195,8 @@
 - (void)removeChildRequest:(ACELoadingRequest *)request
 {
     if (request != nil) {
-        // reset the delegate
-        request.delegate = nil;
+        // remove the parent request
+        request.parentRequest = self;
         
         // remove from the list of children
         [self.childRequests removeObject:request];
@@ -193,14 +205,17 @@
 
 - (void)updateLoadingState
 {
+    NSSet *loadingStates = [self.childRequests valueForKey:@"loadingState"];
+    if (loadingStates.count == 0) {
+        return;
+    }
+    
     // let's find out what our state should be by asking our data sources
     NSInteger numberOfLoading = 0;
     NSInteger numberOfRefreshing = 0;
     NSInteger numberOfError = 0;
     NSInteger numberOfLoaded = 0;
     NSInteger numberOfNoContent = 0;
-    
-    NSSet *loadingStates = [self.childRequests valueForKey:@"loadingState"];
     
     for (NSString *state in loadingStates) {
         if ([state isEqualToString:ACELoadingStateLoadingContent])
@@ -264,7 +279,7 @@
             oldPendingUpdate();
             block();
         };
-    
+        
     } else {
         update = block;
     }
@@ -272,23 +287,22 @@
     self.pendingUpdateBlock = update;
 }
 
-- (void)loadingRequest:(ACELoadingRequest *)request
+- (void)notifyWillLoadContent
 {
-    // nofify the delegate
-    if ([self.delegate respondsToSelector:@selector(loadingRequest:)]) {
-        [self.delegate loadingRequest:request];
-    }
-
     // update the status
     [self updateLoadingState];
+    
+    // update the parent status
+    [self.parentRequest notifyWillLoadContent];
 }
 
-- (void)request:(ACELoadingRequest *)request batchUpdate:(dispatch_block_t)update complete:(dispatch_block_t)complete
+- (void)executeBatchUpdate:(dispatch_block_t)update complete:(dispatch_block_t)complete
 {
-    if ([self.delegate respondsToSelector:@selector(request:batchUpdate:complete:)]) {
-        [self.delegate request:self batchUpdate:update complete:complete];
-    
+    if (self.parentRequest != nil) {
+        [self.parentRequest executeBatchUpdate:update complete:complete];
+        
     } else {
+        // execute all the updates together
         if (update) {
             update();
         }
@@ -299,24 +313,22 @@
     }
 }
 
-- (void)request:(ACELoadingRequest *)request loadedWithError:(NSError *)error
+- (void)notifyContentLoadedWithError:(NSError *)error
 {
-    // nofify the delegate
-    if ([self.delegate respondsToSelector:@selector(request:loadedWithError:)]) {
-        [self.delegate request:request loadedWithError:error];
-    }
-    
     // update the block in case was pending
     BOOL showingPlaceholder = self.shouldDisplayPlaceholder;
     [self updateLoadingState];
     
     // We were showing the placehoder and now we're not
     if (showingPlaceholder && !self.shouldDisplayPlaceholder) {
-        [self request:request batchUpdate:^{
+        [self executeBatchUpdate:^{
             [self executePendingUpdates];
             
         } complete:nil];
     }
+    
+    // notify the parent
+    [self.parentRequest notifyContentLoadedWithError:error];
 }
 
 @end

@@ -13,7 +13,7 @@
 #import "ACEErrorRequest.h"
 #import "ACERootRequest.h"
 
-@interface ACEViewController ()<ACELoadingRequestDelegate>
+@interface ACEViewController ()
 @property (nonatomic, strong) ACERootRequest *requestWithData;
 @end
 
@@ -25,7 +25,10 @@
     
     // parent
     self.requestWithData = [[ACERootRequest alloc] initWithRequestId:@"Root"];
-    self.requestWithData.delegate = self;
+    [self addObserver:self.requestWithData
+           forKeyPath:@"loadingState"
+              options:NSKeyValueObservingOptionNew
+              context:nil];
     
     ACERootRequest *child = [[ACERootRequest alloc] initWithRequestId:@"Child B"];
     [child addChildRequest:[[ACEDataRequest alloc] initWithRequestId:@"Child B.1"]];
@@ -36,6 +39,11 @@
     [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithRequestId:@"Child A"]];
     [self.requestWithData addChildRequest:child];
     [self.requestWithData addChildRequest:[[ACEDataRequest alloc] initWithRequestId:@"Child C"]];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    
 }
 
 - (void)didReceiveMemoryWarning

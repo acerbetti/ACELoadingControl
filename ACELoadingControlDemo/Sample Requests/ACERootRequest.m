@@ -15,17 +15,6 @@
     [super loadRequest];
 }
 
-- (void)loadingRequest:(ACELoadingRequest *)request loadingWithState:(NSString *)state
-{
-    
-}
-
-- (void)request:(ACELoadingRequest *)request loadedWithError:(NSError *)error
-{
-//    NSLog(@"Update notification.");
-    [super request:request loadedWithError:error];
-}
-
 
 #pragma mark - State Machine Delegate
 
