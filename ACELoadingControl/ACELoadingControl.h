@@ -1,4 +1,4 @@
-// ACECoreDataManager.h
+// ACELoadingControl.h
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //

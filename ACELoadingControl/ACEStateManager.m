@@ -1,4 +1,4 @@
-// ACECoreDataManager.h
+// ACEStateManager.m
 //
 // Copyright (c) 2014 Stefano Acerbetti
 //
