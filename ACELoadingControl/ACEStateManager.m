@@ -164,13 +164,17 @@
 
 - (NSString *)stateManager:(ACEStateManager *)stateManager missingTransitionFromState:(NSString *)fromState toState:(NSString *)toState
 {
+    NSString *missingState = nil;
+    
     if ([self.delegate respondsToSelector:@selector(stateManager:missingTransitionFromState:toState:)]) {
-        return [self.delegate stateManager:self missingTransitionFromState:fromState toState:toState];
-        
-    } else {
-        [NSException raise:@"IllegalStateTransition" format:@"cannot transition from %@ to %@", fromState, toState];
-        return nil;
+        missingState = [self.delegate stateManager:self missingTransitionFromState:fromState toState:toState];
     }
+    
+    if (missingState == nil) {
+        [NSException raise:@"IllegalStateTransition" format:@"cannot transition from %@ to %@", fromState, toState];
+    }
+    
+    return missingState;
 }
 
 @end

@@ -35,11 +35,13 @@ typedef void (^ACELoadingBlock)(ACELoadingControl *loading);
 @property (nonatomic, readonly) ACELoadingRequest *parentRequest;
 
 @property (nonatomic, readonly) NSString *loadingState;
-@property (nonatomic, readonly) BOOL isLoaded;
+@property (nonatomic, readonly) BOOL loadingComplete;
 
 
 
 - (instancetype)initWithRequestId:(NSString *)requestId;
+
+- (NSString *)initialState;
 
 - (void)loadContentWithBlock:(ACELoadingBlock)block;
 - (void)loadRequest NS_REQUIRES_SUPER;

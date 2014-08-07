@@ -47,8 +47,16 @@ NSString *const kACELoadingState = @"loadingState";
     self = [super init];
     if (self) {
         _requestId = requestId;
+        
+        // set the initial state
+        [self.stateMachine applyState:[self initialState]];
     }
     return self;
+}
+
+- (NSString *)initialState
+{
+    return ACELoadingStateInitial;
 }
 
 - (NSString *)description
@@ -86,15 +94,6 @@ NSString *const kACELoadingState = @"loadingState";
 - (NSString *)loadingState
 {
     return self.stateMachine.currentState;
-}
-
-- (BOOL)isLoaded
-{
-    NSString *state = self.loadingState;
-    
-    return [state isEqualToString:ACELoadingStateContentLoaded]
-    || [state isEqualToString:ACELoadingStateNoContent]
-    || [state isEqualToString:ACELoadingStateError];
 }
 
 - (NSString *)requestId
@@ -138,6 +137,9 @@ NSString *const kACELoadingState = @"loadingState";
 
 - (void)beginLoading
 {
+    // update the status
+    [self updateLoadingState];
+    
     self.loadingComplete = NO;
     
     NSString *currentState = [self loadingState];
