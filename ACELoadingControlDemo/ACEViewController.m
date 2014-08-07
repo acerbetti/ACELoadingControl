@@ -25,7 +25,7 @@
     
     // parent
     self.requestWithData = [[ACERootRequest alloc] initWithRequestId:@"Root"];
-    [self addObserver:self.requestWithData
+    [self.requestWithData addObserver:self
            forKeyPath:@"loadingState"
               options:NSKeyValueObservingOptionNew
               context:nil];
@@ -43,8 +43,9 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    
+    NSLog(@"%@: changed state to %@.", @"PAGE", change[@"new"]);
 }
+
 
 - (void)didReceiveMemoryWarning
 {

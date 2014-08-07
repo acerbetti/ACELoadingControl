@@ -15,12 +15,4 @@
     [super loadRequest];
 }
 
-
-#pragma mark - State Machine Delegate
-
-- (void)stateDidChange:(ACEStateManager *)stateManager
-{
-    NSLog(@"%@: changed state to %@.", self.requestId, stateManager.currentState);
-}
-
 @end
