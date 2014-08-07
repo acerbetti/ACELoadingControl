@@ -53,7 +53,7 @@ NSString *const kACELoadingState = @"loadingState";
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"Loading request with ID: %@", _requestId];
+    return [NSString stringWithFormat:@"Loading request %@ with state: %@", _requestId, self.loadingState];
 }
 
 - (void)dealloc

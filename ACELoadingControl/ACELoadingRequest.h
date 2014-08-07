@@ -44,8 +44,8 @@ typedef void (^ACELoadingBlock)(ACELoadingControl *loading);
 - (void)loadContentWithBlock:(ACELoadingBlock)block;
 - (void)loadRequest NS_REQUIRES_SUPER;
 
-- (void)requestWillLoadContent:(ACELoadingRequest *)request NS_REQUIRES_SUPER;
-- (void)request:(ACELoadingRequest *)request didLoadContentWithError:(NSError *)error NS_REQUIRES_SUPER;
+- (void)requestWillLoadContent:(ACELoadingRequest *)request;
+- (void)request:(ACELoadingRequest *)request didLoadContentWithError:(NSError *)error;
 
 - (void)addChildRequest:(ACELoadingRequest *)request;
 - (void)removeChildRequest:(ACELoadingRequest *)request;

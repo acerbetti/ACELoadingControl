@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'ACELoadingControl'
-  s.version      = '0.0.1'
+  s.version      = '0.0.2'
   s.summary      = 'Better manager of complex download requests.'
   s.description  = <<-DESC
                    Loading state machine that supports dependencies
