@@ -24,6 +24,8 @@
 #import "ACELoadingControl.h"
 #import "ACELoadingStateManager.h"
 
+extern NSString *const kACELoadingState;
+
 typedef void (^ACELoadingBlock)(ACELoadingControl *loading);
 
 
@@ -33,6 +35,7 @@ typedef void (^ACELoadingBlock)(ACELoadingControl *loading);
 @property (nonatomic, readonly) ACELoadingRequest *parentRequest;
 
 @property (nonatomic, readonly) NSString *loadingState;
+@property (nonatomic, readonly) BOOL isLoaded;
 
 
 
@@ -40,6 +43,9 @@ typedef void (^ACELoadingBlock)(ACELoadingControl *loading);
 
 - (void)loadContentWithBlock:(ACELoadingBlock)block;
 - (void)loadRequest NS_REQUIRES_SUPER;
+
+- (void)requestWillLoadContent:(ACELoadingRequest *)request NS_REQUIRES_SUPER;
+- (void)request:(ACELoadingRequest *)request didLoadContentWithError:(NSError *)error NS_REQUIRES_SUPER;
 
 - (void)addChildRequest:(ACELoadingRequest *)request;
 - (void)removeChildRequest:(ACELoadingRequest *)request;

@@ -23,6 +23,8 @@
 
 #import "ACELoadingRequest.h"
 
+NSString *const kACELoadingState = @"loadingState";
+
 @interface ACELoadingRequest ()
 @property (nonatomic, strong) ACELoadingStateManager *stateMachine;
 @property (nonatomic, strong) ACELoadingControl *loadingInstance;
@@ -47,6 +49,18 @@
         _requestId = requestId;
     }
     return self;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"Loading request with ID: %@", _requestId];
+}
+
+- (void)dealloc
+{
+    for (ACELoadingRequest *request in self.childRequests) {
+        [self removeChildRequest:request];
+    }
 }
 
 
@@ -74,6 +88,15 @@
     return self.stateMachine.currentState;
 }
 
+- (BOOL)isLoaded
+{
+    NSString *state = self.loadingState;
+    
+    return [state isEqualToString:ACELoadingStateContentLoaded]
+    || [state isEqualToString:ACELoadingStateNoContent]
+    || [state isEqualToString:ACELoadingStateError];
+}
+
 - (NSString *)requestId
 {
     return _requestId;
@@ -84,6 +107,8 @@
 
 - (void)loadRequest
 {
+    [self beginLoading];
+    
     for (ACELoadingRequest *request in self.childRequests) {
         [request loadRequest];
     }
@@ -91,8 +116,6 @@
 
 - (void)loadContentWithBlock:(ACELoadingBlock)block
 {
-    [self beginLoading];
-    
     __weak typeof(self) weakSelf = self;
     
     ACELoadingControl *loading = [ACELoadingControl loadingWithCompletionHandler:^(NSString *newState, NSError *error, ACELoadingUpdateBlock update) {
@@ -203,6 +226,32 @@
     }
 }
 
+- (void)requestWillLoadContent:(ACELoadingRequest *)request
+{
+    // update the status
+    [self updateLoadingState];
+    
+    // update the parent status
+    [self notifyWillLoadContent];
+}
+
+- (void)request:(ACELoadingRequest *)request didLoadContentWithError:(NSError *)error
+{
+    BOOL showingPlaceholder = self.shouldDisplayPlaceholder;
+    [self updateLoadingState];
+    
+    // we were showing the placehoder and now we're not
+    if (showingPlaceholder && !self.shouldDisplayPlaceholder) {
+        [self executeBatchUpdate:^{
+            [self executePendingUpdates];
+            
+        } complete:nil];
+    }
+    
+    // update the parent status
+    [self notifyContentLoadedWithError:error];
+}
+
 - (void)updateLoadingState
 {
     NSSet *loadingStates = [self.childRequests valueForKey:@"loadingState"];
@@ -289,11 +338,7 @@
 
 - (void)notifyWillLoadContent
 {
-    // update the status
-    [self updateLoadingState];
-    
-    // update the parent status
-    [self.parentRequest notifyWillLoadContent];
+    [self.parentRequest requestWillLoadContent:self];
 }
 
 - (void)executeBatchUpdate:(dispatch_block_t)update complete:(dispatch_block_t)complete
@@ -315,20 +360,8 @@
 
 - (void)notifyContentLoadedWithError:(NSError *)error
 {
-    // update the block in case was pending
-    BOOL showingPlaceholder = self.shouldDisplayPlaceholder;
-    [self updateLoadingState];
-    
-    // We were showing the placehoder and now we're not
-    if (showingPlaceholder && !self.shouldDisplayPlaceholder) {
-        [self executeBatchUpdate:^{
-            [self executePendingUpdates];
-            
-        } complete:nil];
-    }
-    
     // notify the parent
-    [self.parentRequest notifyContentLoadedWithError:error];
+    [self.parentRequest request:self didLoadContentWithError:error];
 }
 
 @end
