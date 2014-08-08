@@ -30,6 +30,7 @@ NSString *const kACELoadingState = @"loadingState";
 @property (nonatomic, strong) ACELoadingControl *loadingInstance;
 
 @property (nonatomic, copy) dispatch_block_t pendingUpdateBlock;
+@property (nonatomic, strong) NSError *loadingError;
 @property (nonatomic, assign) BOOL loadingComplete;
 
 @property (nonatomic, strong) ACELoadingRequest *parentRequest;
@@ -155,7 +156,7 @@ NSString *const kACELoadingState = @"loadingState";
 
 - (void)endLoadingWithState:(NSString *)state error:(NSError *)error update:(dispatch_block_t)update
 {
-    // self.loadingError = error;
+    self.loadingError = error;
     [self.stateMachine applyState:state];
     
     if (self.shouldDisplayPlaceholder) {

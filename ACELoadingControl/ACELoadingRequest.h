@@ -35,6 +35,7 @@ typedef void (^ACELoadingBlock)(ACELoadingControl *loading);
 @property (nonatomic, readonly) ACELoadingRequest *parentRequest;
 
 @property (nonatomic, readonly) NSString *loadingState;
+@property (nonatomic, readonly) NSError *loadingError;
 @property (nonatomic, readonly) BOOL loadingComplete;
 
 
