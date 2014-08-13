@@ -50,7 +50,7 @@ NSString *const kACELoadingState = @"loadingState";
         _requestId = requestId;
         
         // set the initial state
-        [self.stateMachine applyState:[self initialState]];
+        self.stateMachine.currentState = [self initialState];
     }
     return self;
 }
@@ -156,7 +156,9 @@ NSString *const kACELoadingState = @"loadingState";
 
 - (void)endLoadingWithState:(NSString *)state error:(NSError *)error update:(dispatch_block_t)update
 {
+    self.loadingComplete = YES;
     self.loadingError = error;
+    
     [self.stateMachine applyState:state];
     
     if (self.shouldDisplayPlaceholder) {
@@ -175,8 +177,6 @@ NSString *const kACELoadingState = @"loadingState";
             
         } complete:nil];
     }
-    
-    self.loadingComplete = YES;
     
     [self notifyContentLoadedWithError:error];
 }
