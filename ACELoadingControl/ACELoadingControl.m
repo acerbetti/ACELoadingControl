@@ -75,7 +75,9 @@
     void (^block)(NSString *state, NSError *error, ACELoadingUpdateBlock update) = _block;
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        block(newState, error, update);
+        if (block != nil) {
+            block(newState, error, update);
+        }
     });
     
     _block = nil;

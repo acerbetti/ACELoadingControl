@@ -215,6 +215,7 @@ NSString *const kLoadingErrorMultiKey = @"kErrorSet";
     if (request != nil) {
         // set the parent request
         request.parentRequest = self;
+        request.stateMachine.currentState = [self loadingState];
         
         // add to the list of children
         [self.childRequests addObject:request];
@@ -225,7 +226,7 @@ NSString *const kLoadingErrorMultiKey = @"kErrorSet";
 {
     if (request != nil) {
         // remove the parent request
-        request.parentRequest = self;
+        request.parentRequest = nil;
         
         // remove from the list of children
         [self.childRequests removeObject:request];
