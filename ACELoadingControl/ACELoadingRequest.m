@@ -25,6 +25,9 @@
 
 NSString *const kACELoadingState = @"loadingState";
 
+NSString *const kLoadingErrorDomain = @"com.acetool.request";
+NSString *const kLoadingErrorMultiKey = @"kErrorSet";
+
 @interface ACELoadingRequest ()
 @property (nonatomic, strong) ACELoadingStateManager *stateMachine;
 @property (nonatomic, strong) ACELoadingControl *loadingInstance;
@@ -294,6 +297,12 @@ NSString *const kACELoadingState = @"loadingState";
         [self.stateMachine applyState:ACELoadingStateRefreshingContent];
         
     } else if (numberOfError) {
+        self.loadingError = [NSError errorWithDomain:kLoadingErrorDomain
+                                                code:-1
+                                            userInfo:@{
+                                                       kLoadingErrorMultiKey: [self.childRequests valueForKey:@"loadingError"]
+                                                       }];
+       
         [self.stateMachine applyState:ACELoadingStateError];
         
     } else if (numberOfNoContent) {

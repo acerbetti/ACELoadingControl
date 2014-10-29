@@ -26,6 +26,9 @@
 
 extern NSString *const kACELoadingState;
 
+extern NSString *const kLoadingErrorDomain;
+extern NSString *const kLoadingErrorMultiKey;
+
 typedef void (^ACELoadingBlock)(ACELoadingControl *loading);
 
 
