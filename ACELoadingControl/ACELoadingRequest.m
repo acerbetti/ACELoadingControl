@@ -123,9 +123,10 @@ NSString *const kLoadingErrorMultiKey = @"kErrorSet";
     
     ACELoadingControl *loading = [ACELoadingControl loadingWithCompletionHandler:^(NSString *newState, NSError *error, ACELoadingUpdateBlock update) {
         if (newState != nil) {
-            [self endLoadingWithState:newState error:error update:^{
+            [weakSelf endLoadingWithState:newState error:error update:^{
                 if (update != nil) {
-                    update(weakSelf);
+                    ACELoadingRequest *strongSelf = weakSelf;
+                    update(strongSelf);
                 }
             }];
         }
@@ -170,9 +171,11 @@ NSString *const kLoadingErrorMultiKey = @"kErrorSet";
         }
         
     } else {
+        __weak typeof(self) weakSelf = self;
+        
         [self executeBatchUpdate:^{
             // run pending updates
-            [self executePendingUpdates];
+            [weakSelf executePendingUpdates];
             
             if (update) {
                 update();
