@@ -202,12 +202,12 @@ NSString *const kLoadingErrorMultiKey = @"kErrorSet";
 
 - (void)stateWillChange:(ACEStateManager *)stateManager
 {
-    [self willChangeValueForKey:@"loadingState"];
+    [self willChangeValueForKey:kACELoadingState];
 }
 
 - (void)stateDidChange:(ACEStateManager *)stateManager
 {
-    [self didChangeValueForKey:@"loadingState"];
+    [self didChangeValueForKey:kACELoadingState];
 }
 
 
@@ -264,7 +264,7 @@ NSString *const kLoadingErrorMultiKey = @"kErrorSet";
 
 - (void)updateLoadingState
 {
-    NSSet *loadingStates = [self.childRequests valueForKey:@"loadingState"];
+    NSSet *loadingStates = [self.childRequests valueForKey:kACELoadingState];
     if (loadingStates.count == 0) {
         return;
     }
