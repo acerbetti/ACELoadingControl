@@ -36,7 +36,7 @@ NSString *const kLoadingErrorMultiKey = @"kErrorSet";
 @property (nonatomic, strong) NSError *loadingError;
 @property (nonatomic, assign) BOOL loadingComplete;
 
-@property (nonatomic, strong) ACELoadingRequest *parentRequest;
+@property (nonatomic, weak) ACELoadingRequest *parentRequest;
 @property (nonatomic, strong) NSMutableSet *childRequests;
 @end
 
@@ -70,7 +70,8 @@ NSString *const kLoadingErrorMultiKey = @"kErrorSet";
 
 - (void)dealloc
 {
-    for (ACELoadingRequest *request in self.childRequests) {
+    NSArray *requests = [self.childRequests copy];
+    for (ACELoadingRequest *request in requests) {
         [self removeChildRequest:request];
     }
 }
